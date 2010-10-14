@@ -1,0 +1,14 @@
+{
+  "fields": [
+    {
+      "name": "startDate",
+      "displayName": "Start Date",
+      "type": "date"
+    },
+    {
+      "name": "skills",
+      "displayName": "Skills",
+      "type": "map"
+    }
+  ]
+}

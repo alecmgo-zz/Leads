@@ -1,0 +1,69 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+/* Sidebar */
+
+#sidebar {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 20%;
+	border-right: 1px solid #444;
+	background-color: #eee;
+}
+
+a.item {
+	display: block;
+	margin: 8px;
+	padding: 2px 5px;
+	-moz-border-radius: 5px;
+	color: #12e;
+}
+
+a.item:hover {
+	background-color: #333;
+	color: white;
+	text-decoration: none;
+}
+
+/* Workspace */
+
+#workspace {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	left: 20%;
+	right: 0;
+}
+
+#workspaceBody {
+}
+
+div.field {
+	margin: 8px 12px;
+}
+
+span.field {
+	display: inline-block;
+	width: 120px;
+	font-weight: bold;
+}
+
+#content {
+	padding: 12px;
+	border-top: 1px solid #999;	
+}
+
+/** Miscellaneous */
+
+#loading {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 56px;
+	height: 21px;
+	display: none;
+}
