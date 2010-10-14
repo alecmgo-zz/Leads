@@ -1,11 +1,16 @@
 // leads.js
 
+// TODO(robbyw): Support 'date' and 'map' field types.
+// TODO(robbyw): Support sort and search for items.
+// TODO(robbyw): Update list after new item creation.
+// TODO(robbyw): Handle active vs. inactive items.
+
 var fields;
 var items;
 var doneParts = 0;
 
 function initPartDone() {
-	if (++doneParts == 2) {
+	if (++doneParts >= 2) {
 		$('#loading').hide();
 		displayItemList();
 	}
@@ -24,6 +29,11 @@ function displayItemList() {
 			});
 		container.append(elem);
 	}
+	container.append($('<button type="submit" id="new">New</button>').click(newItem));
+}
+
+function newItem() {
+	displayItem({});
 }
 
 function switchToItem(id) {
@@ -71,10 +81,11 @@ function displayItem(item) {
 	}
 	addField(container, item, 'active', 'Active', 'boolean');
 	var content = $('<div id="content" class="autogrow"></div>').append(
-		$('<textarea></textarea>').attr('name', 'content').text(item['content']));
+		$('<textarea></textarea>').attr('name', 'content').text(item['content'] || ''));
 	container.append(content);
 	container.append($('<div id="save"></div>').append($('<button type="submit">Save</button>')).click(save));
 	autoGrow(content);
+	$('#title').focus();
 }
 
 function autoGrow(element) {
