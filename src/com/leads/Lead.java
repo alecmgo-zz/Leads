@@ -49,13 +49,9 @@ public class Lead {
       j.put("title", title);
       j.put("active", active);
       j.put("content", content.getValue().toString());
-      
-      JSONObject metadata = new JSONObject();
-      metadata.put("startDate", startDate);
-//      metadata.put("skills", skills); //TODO: This is broken
-      metadata.put("nextStep", nextStep);
-      metadata.put("status", status);
-      j.put("metadata", metadata);
+      j.put("startDate", startDate);
+      j.put("nextStep", nextStep);
+      j.put("status", status);
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -85,8 +81,15 @@ public class Lead {
       this.active = active;
     }
     
+    String nextStep = obj.optString("nextStep");
+    if(nextStep != null) {
+      
+      this.nextStep = nextStep;
+      System.out.println("updated nextStep");
+    }
+    
     String startDate = obj.optString("startDate");  
-    if(startDate != null) {
+    if(startDate != null && !startDate.equals("")) {
       SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
       try {
         this.startDate = fmt.parse(startDate);
