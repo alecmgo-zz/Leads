@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "George Washington",
+      "active": true
+    },
+    {
+      "id": 2,
+      "title": "John Adams",
+      "active": true
+    },
+    {
+      "id": 3,
+      "title": "Thomas Jefferson",
+      "active": false
+    }
+  ]
+}
