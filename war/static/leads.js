@@ -122,6 +122,7 @@ function save() {
 	$.ajax({
 		url: "api/saveItem",
 		data: JSON.stringify(result),
+		type: "POST",
 		success: function(newId) {
 			$('[name=id]').val(newId['id']);
 			$('#save button').text('Save');

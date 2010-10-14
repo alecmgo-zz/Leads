@@ -33,7 +33,7 @@ public class SaveItemServlet extends HttpServlet {
       while((line = reader.readLine()) != null) {
         payloadString.append(line);
       }
-      
+      System.out.println("Payload: " + payloadString);
       JSONObject payload = new JSONObject(payloadString.toString());
       Long id = payload.optLong("id");
       
