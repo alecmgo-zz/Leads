@@ -18,17 +18,28 @@ function initPartDone() {
 function displayItemList() {
   var container = $('#sidebar');
   container.empty();
+  container.append($('<button type="submit" id="new">New Item</button>').click(newItem));
+  container.append('<div class="listSection">Active Items</div>');
+  var inactiveElements = [];
   for (var i = 0, len = items.length; i < len; i++) {
+    var item = items[i];
     var elem = $('<a href="#"></a>')
         .addClass('item')
-        .attr('id', items[i]['id'])
-        .text(items[i]['title'] || '')
+        .attr('id', item['id'])
+        .text(item['title'] || '')
         .click(function() {
       switchToItem(this.id);
     });
-    container.append(elem);
+    if (item['active']) {
+      container.append(elem);
+    } else {
+      inactiveElements.push(elem);
+    }
   }
-  container.append($('<button type="submit" id="new">New</button>').click(newItem));
+  container.append('<div class="listSection">Inactive Items</div>');
+  for (i = 0, len = inactiveElements.length; i < len; i++) {
+    container.append(inactiveElements[i]);
+  }
 }
 
 function newItem() {
@@ -51,21 +62,50 @@ function switchToItem(id) {
 }
 
 function addField(container, item, fieldName, displayName, fieldType) {
+  var value = item[fieldName] || '';
+
+  var input;
+  if (fieldType == 'boolean') {
+    input = $('<span></span>')
+        .append(
+            $('<input type="radio"/>')
+                .attr('id', fieldName + '.yes')
+                .attr('name', fieldName)
+                .attr('checked', !!value)
+                .val('true')
+                .addClass("value"))
+        .append(
+            $('<label/>')
+                .attr('forId', fieldName + '.yes')
+                .text('yes '))
+        .append(
+            $('<input type="radio"/>')
+                .attr('id', fieldName + '.no')
+                .attr('name', fieldName)
+                .attr('checked', !value)
+                .val('false')
+                .addClass("value"))
+        .append(
+            $('<label/>')
+                .attr('forId', fieldName + '.no')
+                .text('no'));
+  } else {
+    input = $('<input type="text"/>')
+        .attr('id', fieldName)
+        .attr('name', fieldName)
+        .val(value)
+        .addClass("value")
+        .focus(function() {
+          $(this).addClass("active");
+        })
+        .blur(function() {
+          $(this).removeClass("active");
+        });
+  }
   var elem = $('<div></div>')
       .addClass('field')
       .append($('<span></span>').text(displayName + ':').addClass("field"))
-      .append($('<input type="text"/>')
-      .attr('id', fieldName)
-      .attr('name', fieldName)
-      .val(item[fieldName] || "")
-      .addClass("value")
-      .focus(function() {
-        $(this).addClass("active");
-      })
-      .blur(function() {
-        $(this).removeClass("active");
-      })
-      );
+      .append(input);
   container.append(elem);
 }
 
