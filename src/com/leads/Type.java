@@ -70,7 +70,7 @@ public abstract class Type<T> {
     }
 
     public Object convertToJsonInternal(Text value) {
-      return value.toString();
+      return value.getValue();
     }
 
     public String getName() {

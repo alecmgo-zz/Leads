@@ -1,6 +1,7 @@
 package com.leads;
 
 import com.google.appengine.api.datastore.Text;
+import com.google.common.base.CaseFormat;
 import com.google.common.primitives.Primitives;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,15 +52,21 @@ public class Lead {
     try {
       for (Field f : Lead.class.getDeclaredFields()) {
         if (f.getAnnotation(Persistent.class) != null) {
-          Class<?> boxClass = Primitives.wrap(f.getType());
-          if (f.get(this) != null) {
-            j.put(f.getName(), Type.getType(boxClass).convertToJson(f.get(this)));
+          Class<?> wrappedClass = Primitives.wrap(f.getType());
+          Method getter = Lead.class.getMethod("get" + getCapitalizedName(f));
+          Object value = getter.invoke(this);
+          if (value != null) {
+            j.put(f.getName(), Type.getType(wrappedClass).convertToJson(value));
           }
         }
       }
     } catch (IllegalAccessException e) {
       e.printStackTrace();
     } catch (JSONException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
       e.printStackTrace();
     }
     return j.toString();
@@ -77,6 +84,10 @@ public class Lead {
     return j;
   }
 
+  private static String getCapitalizedName(Field f) {
+    return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, f.getName());
+  }
+
   public void update(JSONObject obj) {
     try {
       for (Field f : Lead.class.getDeclaredFields()) {
@@ -86,9 +97,9 @@ public class Lead {
             // We have to use the setter since that is how the enhanced class works.
             Class<?> unwrappedClass = Primitives.unwrap(f.getType());
             Class<?> wrappedClass = Primitives.wrap(f.getType());
-            String capitalized = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-            Method setter = Lead.class.getMethod("set" + capitalized, unwrappedClass);
-            setter.invoke(this, Type.getType(wrappedClass).convertFromJson(value));
+            Method setter = Lead.class.getMethod("set" + getCapitalizedName(f), unwrappedClass);
+            Object fieldValue = Type.getType(wrappedClass).convertFromJson(value);
+            setter.invoke(this, fieldValue);
           }
         }
       }
@@ -110,6 +121,10 @@ public class Lead {
   }
 
   public boolean isActive() {
+    return active;
+  }
+
+  public boolean getActive() {
     return active;
   }
 
