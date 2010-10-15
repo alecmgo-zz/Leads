@@ -76,7 +76,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
                 .addClass('value'))
         .append(
             $('<label/>')
-                .attr('forId', fieldName + '.yes')
+                .attr('for', fieldName + '.yes')
                 .text('yes '))
         .append(
             $('<input type="radio"/>')
@@ -87,7 +87,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
                 .addClass('value'))
         .append(
             $('<label/>')
-                .attr('forId', fieldName + '.no')
+                .attr('for', fieldName + '.no')
                 .text('no'));
   } else {
     input = $('<input type="text"/>')
