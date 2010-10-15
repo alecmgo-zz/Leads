@@ -84,9 +84,11 @@ public class Lead {
           Object value = obj.opt(f.getName());
           if (value != null) {
             // We have to use the setter since that is how the enhanced class works.
+            Class<?> unwrappedClass = Primitives.unwrap(f.getType());
+            Class<?> wrappedClass = Primitives.wrap(f.getType());
             String capitalized = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-            Method setter = Lead.class.getMethod("set" + capitalized, f.getType());
-            setter.invoke(this, Type.getType(f.getType()).convertFromJson(value));
+            Method setter = Lead.class.getMethod("set" + capitalized, unwrappedClass);
+            setter.invoke(this, Type.getType(wrappedClass).convertFromJson(value));
           }
         }
       }
@@ -104,10 +106,6 @@ public class Lead {
   }
 
   public void setId(long id) {
-    this.id = id;
-  }
-
-  public void setId(Long id) {
     this.id = id;
   }
 
