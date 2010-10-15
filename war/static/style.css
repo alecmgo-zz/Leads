@@ -29,6 +29,7 @@ a.item {
 	margin: 8px;
 	padding: 2px 5px;
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	color: #12e;
 }
 
@@ -107,6 +108,7 @@ button {
 	border: 1px solid #ccc;
 	background-color: white;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 	padding: 2px 6px;
 	margin-left: 10px;
 	font-weight: bold;
