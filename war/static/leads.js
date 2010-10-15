@@ -93,6 +93,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
     input = $('<input type="text"/>')
         .attr('id', fieldName)
         .attr('name', fieldName)
+        .attr('size', fieldType == 'date' ? 15 : 50)
         .val(value)
         .addClass("value")
         .focus(function() {
@@ -101,6 +102,9 @@ function addField(container, item, fieldName, displayName, fieldType) {
         .blur(function() {
           $(this).removeClass("active");
         });
+    if (fieldType == 'date') {
+      input.datepicker();
+    }
   }
   var elem = $('<div></div>')
       .addClass('field')

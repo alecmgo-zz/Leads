@@ -41,7 +41,7 @@ public abstract class Type<T> {
 
 
   public static class DateType extends Type<Date> {
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyyMMdd");
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 
     public Date convertFromJson(Object value) {
       Preconditions.checkArgument(value instanceof String);
