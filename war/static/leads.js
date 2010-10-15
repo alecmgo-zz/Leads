@@ -1,8 +1,7 @@
 // leads.js
 
-// TODO(robbyw): Support 'date' and 'map' field types.
+// TODO(robbyw): Support 'map' field type.
 // TODO(robbyw): Support sort and search for items.
-// TODO(robbyw): Handle active vs. inactive items.
 
 var fields;
 var items;
