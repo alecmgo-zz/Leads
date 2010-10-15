@@ -144,6 +144,9 @@ function updateAutoGrow() {
 
 function getFieldValue(result, name, dataType) {
   var fieldElem = $('[name=' + name + ']');
+  if (fieldElem.size() > 1) {
+    fieldElem = fieldElem.filter('[checked]');
+  }
   var value = fieldElem.val() || fieldElem.text();
   if (dataType == 'text' || value === 0 || value) {
     result[name] = value;
