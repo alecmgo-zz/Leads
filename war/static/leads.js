@@ -43,14 +43,14 @@ function displayItemList() {
 }
 
 function newItem() {
-  displayItem({});
+  displayItem({'active': true});
 }
 
 function switchToItem(id) {
   $('#workspace-body').empty();
   $('#loading').show();
   $.ajax({
-    url: "api/getItem",
+    url: 'api/getItem',
     data: {
       id: id
     },
@@ -73,7 +73,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
                 .attr('name', fieldName)
                 .attr('checked', !!value)
                 .val('true')
-                .addClass("value"))
+                .addClass('value'))
         .append(
             $('<label/>')
                 .attr('forId', fieldName + '.yes')
@@ -84,7 +84,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
                 .attr('name', fieldName)
                 .attr('checked', !value)
                 .val('false')
-                .addClass("value"))
+                .addClass('value'))
         .append(
             $('<label/>')
                 .attr('forId', fieldName + '.no')
@@ -95,12 +95,12 @@ function addField(container, item, fieldName, displayName, fieldType) {
         .attr('name', fieldName)
         .attr('size', fieldType == 'date' ? 15 : 50)
         .val(value)
-        .addClass("value")
+        .addClass('value')
         .focus(function() {
-          $(this).addClass("active");
+          $(this).addClass('active');
         })
         .blur(function() {
-          $(this).removeClass("active");
+          $(this).removeClass('active');
         });
     if (fieldType == 'date') {
       input.datepicker();
@@ -108,7 +108,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
   }
   var elem = $('<div></div>')
       .addClass('field')
-      .append($('<span></span>').text(displayName + ':').addClass("field"))
+      .append($('<span></span>').text(displayName + ':').addClass('field'))
       .append(input);
   container.append(elem);
 }
@@ -169,9 +169,9 @@ function save() {
   getFieldValue(result, 'content');
   $('#save button').text('Saving...');
   $.ajax({
-    url: "api/saveItem",
+    url: 'api/saveItem',
     data: JSON.stringify(result),
-    type: "POST",
+    type: 'POST',
     success: function(newId) {
       $('[name=id]').val(newId['id']);
       $('#save button').text('Save');
@@ -182,7 +182,7 @@ function save() {
 
 function refreshSidebar() {
   $.ajax({
-      url: "api/getItemList",
+      url: 'api/getItemList',
       success: function(data) {
         items = data['items'];
         initPartDone();
@@ -204,7 +204,7 @@ $().ready(function() {
   });
 
   $.ajax({
-    url: "api/getConfig",
+    url: 'api/getConfig',
     success: function(data) {
       fields = data['fields'];
       initPartDone();
