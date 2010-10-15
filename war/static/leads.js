@@ -2,7 +2,6 @@
 
 // TODO(robbyw): Support 'date' and 'map' field types.
 // TODO(robbyw): Support sort and search for items.
-// TODO(robbyw): Update list after new item creation.
 // TODO(robbyw): Handle active vs. inactive items.
 
 var fields;
@@ -61,11 +60,11 @@ function addField(container, item, fieldName, displayName, fieldType) {
       .val(item[fieldName] || "")
       .addClass("value")
       .focus(function() {
-    $(this).addClass("active");
-  })
+        $(this).addClass("active");
+      })
       .blur(function() {
-    $(this).removeClass("active");
-  })
+        $(this).removeClass("active");
+      })
       );
   container.append(elem);
 }
@@ -129,8 +128,19 @@ function save() {
     success: function(newId) {
       $('[name=id]').val(newId['id']);
       $('#save button').text('Save');
+      refreshSidebar();
     }
   })
+}
+
+function refreshSidebar() {
+  $.ajax({
+      url: "api/getItemList",
+      success: function(data) {
+        items = data['items'];
+        initPartDone();
+      }
+    });
 }
 
 $().ready(function() {
@@ -154,11 +164,5 @@ $().ready(function() {
     }
   });
 
-  $.ajax({
-    url: "api/getItemList",
-    success: function(data) {
-      items = data['items'];
-      initPartDone();
-    }
-  });
-})
+  refreshSidebar();
+});
