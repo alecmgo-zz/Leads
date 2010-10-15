@@ -1,11 +1,13 @@
 // leads.js
 
 // TODO(robbyw): Support 'map' field type.
-// TODO(robbyw): Support sort and search for items.
+// TODO(robbyw): Support search for items.
 
 var fields;
 var items;
+var sortField = -1;
 var doneParts = 0;
+
 
 function initPartDone() {
   if (++doneParts >= 2) {
@@ -14,6 +16,7 @@ function initPartDone() {
   }
 }
 
+
 function createListSection(id, text) {
   return $('<div class="listSection"></div>')
       .attr('id', id)
@@ -21,10 +24,32 @@ function createListSection(id, text) {
       .append('<span/>');
 }
 
+
+function createSortSelect() {
+  var select = $('<select></select>');
+  select.append($('<option></option>').val(-1).text('Title'));
+  for (var i = 0, len = fields.length; i < len; i++) {
+    var field = fields[i];
+    var option = $('<option></option>').val(i).text(field['displayName'])
+    select.append(option);
+  }
+  select.val(sortField);
+  select.change(function() {
+    sortField = $(this).val();
+    refreshSidebar();
+  });
+  return $('<div></div>')
+      .append('Sort by: ')
+      .append(select);
+}
+
+
 function displayItemList() {
   var container = $('#sidebar');
   container.empty();
-  container.append($('<button type="submit" id="new">New Item</button>').click(newItem));
+  container.append($('<div id="toolbar"></div>')
+      .append($('<button type="submit" id="new">New Item</button>').click(newItem))
+      .append(createSortSelect()));
   container.append(createListSection('activeHeader', 'Active Items'));
   var active = $('<div id="active"></div>');
   container.append(active);
@@ -32,6 +57,7 @@ function displayItemList() {
   var inactive = $('<div id="inactive"></div>');
   container.append(inactive);
 
+  var sort = fields[sortField];
   for (var i = 0, len = items.length; i < len; i++) {
     var item = items[i];
     var elem = $('<a href="#"></a>')
@@ -39,8 +65,15 @@ function displayItemList() {
         .attr('id', item['id'])
         .text(item['title'] || '')
         .click(function() {
-      switchToItem(this.id);
-    });
+          switchToItem(this.id);
+        });
+    var sortValue = sort && item[sort['name']];
+    if (sortValue) {
+      elem = $('<div></div>')
+          .addClass('item')
+          .append(elem)
+          .append($('<span></span>').text(sortValue))
+    }
     if (item['active']) {
       active.append(elem);
     } else {
@@ -71,9 +104,11 @@ function displayItemList() {
   });
 }
 
+
 function newItem() {
   displayItem({'active': true});
 }
+
 
 function switchToItem(id) {
   $('#workspace-body').empty();
@@ -89,6 +124,7 @@ function switchToItem(id) {
     }
   });
 }
+
 
 function addField(container, item, fieldName, displayName, fieldType) {
   var value = item[fieldName] || '';
@@ -142,6 +178,7 @@ function addField(container, item, fieldName, displayName, fieldType) {
   container.append(elem);
 }
 
+
 function displayItem(item) {
   var container = $('#workspaceBody');
   container.empty();
@@ -160,6 +197,7 @@ function displayItem(item) {
   $('#title').focus();
 }
 
+
 function autoGrow(element) {
   var top = element.offset().top;
   var bottom = element.next().offset().top || element.parent().height();
@@ -169,11 +207,13 @@ function autoGrow(element) {
   element.css('height', height + height - element.outerHeight());
 }
 
+
 function updateAutoGrow() {
   $('.autogrow').each(function() {
     autoGrow($(this));
   })
 }
+
 
 function getFieldValue(result, name, dataType) {
   var fieldElem = $('[name=' + name + ']');
@@ -185,6 +225,7 @@ function getFieldValue(result, name, dataType) {
     result[name] = value;
   }
 }
+
 
 function save() {
   var result = {};
@@ -209,15 +250,22 @@ function save() {
   })
 }
 
+
 function refreshSidebar() {
+  var params = {};
+  if (sortField >= 0) {
+    params['sort'] = fields[sortField]['name'];
+  }
   $.ajax({
-      url: 'api/getItemList',
-      success: function(data) {
-        items = data['items'];
-        initPartDone();
-      }
-    });
+    url: 'api/getItemList',
+    data: params,
+    success: function(data) {
+      items = data['items'];
+      initPartDone();
+    }
+  });
 }
+
 
 $().ready(function() {
   $('#loading').show();

@@ -47,39 +47,50 @@ public class Lead {
   //private Map<String, String> skills;
 
 
+  private void addFieldValue(JSONObject j, Field f) throws JSONException {
+    try {
+      Class<?> wrappedClass = Primitives.wrap(f.getType());
+      Method getter = Lead.class.getMethod("get" + getCapitalizedName(f));
+      Object value = getter.invoke(this);
+      if (value != null) {
+        j.put(f.getName(), Type.getType(wrappedClass).convertToJson(value));
+      }
+    } catch (NoSuchMethodException e) {
+      throw new IllegalStateException(e);
+    } catch (IllegalAccessException e) {
+      throw new IllegalStateException(e);
+    } catch (InvocationTargetException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
   public String toString() {
     JSONObject j = new JSONObject();
     try {
       for (Field f : Lead.class.getDeclaredFields()) {
         if (f.getAnnotation(Persistent.class) != null) {
-          Class<?> wrappedClass = Primitives.wrap(f.getType());
-          Method getter = Lead.class.getMethod("get" + getCapitalizedName(f));
-          Object value = getter.invoke(this);
-          if (value != null) {
-            j.put(f.getName(), Type.getType(wrappedClass).convertToJson(value));
-          }
+          addFieldValue(j, f);
         }
       }
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
     } catch (JSONException e) {
-      e.printStackTrace();
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
+      throw new IllegalStateException(e);
     }
     return j.toString();
   }
 
-  public JSONObject asAbridgedJson() {
+  public JSONObject asAbridgedJson(String sortParam) {
     JSONObject j = new JSONObject();
     try {
       j.put("id", id);
       j.put("title", title);
       j.put("active", active);
+      if (!"title".equals(sortParam)) {
+        addFieldValue(j, Lead.class.getDeclaredField(sortParam));
+      }
     } catch (JSONException e) {
-      e.printStackTrace();
+      throw new IllegalStateException(e);
+    } catch (NoSuchFieldException e) {
+      throw new IllegalStateException(e);
     }
     return j;
   }

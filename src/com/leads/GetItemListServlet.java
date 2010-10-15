@@ -29,7 +29,7 @@ public class GetItemListServlet extends HttpServlet{
     List<Lead> leads = (List<Lead>) gqlQuery.execute();
     JSONArray arr = new JSONArray();
     for(Lead lead : leads) {
-      arr.put(lead.asAbridgedJson());
+      arr.put(lead.asAbridgedJson(sortParam));
     }
     JSONObject obj = new JSONObject();
     try {
