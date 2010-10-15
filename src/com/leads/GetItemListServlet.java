@@ -24,7 +24,7 @@ public class GetItemListServlet extends HttpServlet{
     }
     PersistenceManager pm = PMF.get().getPersistenceManager();
     Query gqlQuery = pm.newQuery(Lead.class);
-    gqlQuery.setOrdering(sortParam + " desc");
+    gqlQuery.setOrdering(sortParam);
 
     List<Lead> leads = (List<Lead>) gqlQuery.execute();
     JSONArray arr = new JSONArray();
