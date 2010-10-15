@@ -1,15 +1,14 @@
 package com.leads;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class SaveItemServlet extends HttpServlet {
 
@@ -18,7 +17,7 @@ public class SaveItemServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     process(req, resp);
   }
-  
+
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     process(req, resp);
   }
@@ -33,23 +32,21 @@ public class SaveItemServlet extends HttpServlet {
       while((line = reader.readLine()) != null) {
         payloadString.append(line);
       }
-      System.out.println("Payload: " + payloadString);
       JSONObject payload = new JSONObject(payloadString.toString());
       Long id = payload.optLong("id");
-      
+
       PersistenceManager pm = PMF.get().getPersistenceManager();
       Lead lead;
       if(id == 0) {
         lead = new Lead();
-        System.err.println("Making new lead");
       } else {
         lead = pm.getObjectById(Lead.class, id);
       }
-      
+
       lead.update(payload);
       pm.makePersistent(lead);
       pm.close();
-      
+
       JSONObject response = new JSONObject();
       response.put("id", lead.getId());
       resp.getWriter().println(response.toString());
@@ -61,7 +58,7 @@ public class SaveItemServlet extends HttpServlet {
       } catch (JSONException e1) {
         e1.printStackTrace();
       }
-      resp.getWriter().println(response.toString());      
+      resp.getWriter().println(response.toString());
     }
   }
 }

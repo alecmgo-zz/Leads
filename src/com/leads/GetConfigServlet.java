@@ -1,49 +1,39 @@
 package com.leads;
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class GetConfigServlet extends HttpServlet{
 
   private static final long serialVersionUID = 906641593005252927L;
 
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    //TODO: Change this. This should automagically be generated, using reflection
-    //on the leads object.
-    JSONObject hackedResult = new JSONObject();
-    
+    JSONObject result = new JSONObject();
+
     JSONArray arr = new JSONArray();
     try {
-      JSONObject startDate = new JSONObject();
-      startDate.put("name", "startDate");
-      startDate.put("displayName", "Start Date");
-      startDate.put("type", "date");
-      arr.put(startDate);
-      
-      JSONObject nextStep = new JSONObject();
-      nextStep.put("name", "nextStep");
-      nextStep.put("displayName", "Next Step");
-      nextStep.put("type", "string");
-      arr.put(nextStep);
-      
-      
-//      JSONObject skills = new JSONObject();
-//      skills.put("name", "skills");
-//      skills.put("displayName", "Skills");
-//      skills.put("type", "map");
-//      arr.put(skills);
-      hackedResult.put("fields", arr);
+      for (Field f : Lead.class.getDeclaredFields()) {
+        DisplayName displayName = f.getAnnotation(DisplayName.class);
+        if (displayName != null) {
+          JSONObject info = new JSONObject();
+          info.put("name", f.getName());
+          info.put("displayName", displayName.value());
+          info.put("type", Type.getType(f.getType()).getName());
+          arr.put(info);
+        }
+      }
+
+      result.put("fields", arr);
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new IllegalStateException("This shouldn't happen", e);
     }
-    resp.getWriter().println(hackedResult.toString());
+    resp.getWriter().println(result.toString());
   }
 }
