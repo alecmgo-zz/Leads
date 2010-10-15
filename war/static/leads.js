@@ -14,12 +14,24 @@ function initPartDone() {
   }
 }
 
+function createListSection(id, text) {
+  return $('<div class="listSection"></div>')
+      .attr('id', id)
+      .append(text)
+      .append('<span/>');
+}
+
 function displayItemList() {
   var container = $('#sidebar');
   container.empty();
   container.append($('<button type="submit" id="new">New Item</button>').click(newItem));
-  container.append('<div class="listSection">Active Items</div>');
-  var inactiveElements = [];
+  container.append(createListSection('activeHeader', 'Active Items'));
+  var active = $('<div id="active"></div>');
+  container.append(active);
+  container.append(createListSection('inactiveHeader', 'Inactive Items'));
+  var inactive = $('<div id="inactive"></div>');
+  container.append(inactive);
+
   for (var i = 0, len = items.length; i < len; i++) {
     var item = items[i];
     var elem = $('<a href="#"></a>')
@@ -30,15 +42,33 @@ function displayItemList() {
       switchToItem(this.id);
     });
     if (item['active']) {
-      container.append(elem);
+      active.append(elem);
     } else {
-      inactiveElements.push(elem);
+      inactive.append(elem);
     }
   }
-  container.append('<div class="listSection">Inactive Items</div>');
-  for (i = 0, len = inactiveElements.length; i < len; i++) {
-    container.append(inactiveElements[i]);
-  }
+
+  inactive.slideUp(0);
+  inactive.data('hidden', true);
+  $('#inactiveHeader span').text(' (' + inactive.children().length + ')').show();
+
+  $('.listSection').click(function() {
+    var items = $('#' + this.id.replace('Header', ''));
+    var span = $(this).children('span');
+    if (items.data('hidden')) {
+      items.data('hidden', false);
+      items.slideDown(function() {
+        span.hide();
+      });
+    } else {
+      items.data('hidden', true);
+      items
+          .slideUp(function() {
+            items.__hidden = true;
+            span.text(' (' + items.children().length + ')').show();
+          });
+    }
+  });
 }
 
 function newItem() {
